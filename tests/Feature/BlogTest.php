@@ -10,6 +10,8 @@ class BlogTest extends TestCase
 {
     public function test_user_can_see_blog_posts()
     {
+        $this->withoutExceptionHandling();
+        
         $response = $this->get('/blogs');
 
         $response->assertStatus(200);
