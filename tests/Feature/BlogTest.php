@@ -8,20 +8,9 @@ use Tests\TestCase;
 
 class BlogTest extends TestCase
 {
-    public function testExample1()
+    public function test_user_can_see_blog_posts()
     {
-        $response = $this->get('/');
-
-        $response->assertStatus(200);
-    }
-
-    /**
-     * @test
-     * we can omit the 'test' word in test functions
-     */
-    public function Example2()
-    {
-        $response = $this->get('/');
+        $response = $this->get('/blogs');
 
         $response->assertStatus(200);
     }
