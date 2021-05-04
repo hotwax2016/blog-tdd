@@ -13,5 +13,6 @@ class BlogTest extends TestCase
         $response = $this->get('/blogs');
 
         $response->assertStatus(200);
+        $response->assertSee('Blog title');
     }
 }
