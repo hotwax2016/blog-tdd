@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostStoreRequest;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Post;
@@ -31,13 +32,12 @@ class PostsController extends Controller
         return view('post.create');
     }
 
-    public function store(Request $request)
+    public function store(PostStoreRequest $request)
     {
-
-        $name = $request->image_url->name;
+        /* $name = $request->image_url->name;
         $content = file_get_contents($request->image_url);
 
-        Storage::put($name, $content);
+        Storage::put($name, $content); */
 
         auth()->user()->blogs()->create($request->all());
 
