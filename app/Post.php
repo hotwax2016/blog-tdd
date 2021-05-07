@@ -7,7 +7,11 @@ use Illuminate\Database\Eloquent\Builder;
 
 class Post extends Model
 {
-    protected $fillable = ['title','body', 'published_at'];
+    protected $fillable = [
+        'title','body', 
+        'image_url', 
+        'published_at'
+    ];
 
     public function scopePublished($query)
     {

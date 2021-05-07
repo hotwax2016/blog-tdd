@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Post;
 
@@ -25,9 +26,15 @@ class PostsController extends Controller
         return view('post.create');
     }
     
-    public function store()
+    public function store(Request $request)
     {
-        Post::create(request()->all());
+
+        $name = $request->image_url->name;
+        $content = file_get_contents($request->image_url);
+        
+        Storage::put($name, $content);
+        
+        Post::create($request->all());
 
         return redirect('/posts');
     }
