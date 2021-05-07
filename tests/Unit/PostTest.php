@@ -2,17 +2,17 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
+use App\User;
+/* use PHPUnit\Framework\TestCase; */
+use Tests\TestCase;
 
 class PostTest extends TestCase
 {
-    /**
-     * A basic unit test example.
-     *
-     * @return void
-     */
-    public function testExample()
+    public function test_post_belongs_to_user()
     {
-        $this->assertTrue(true);
+        $user = $this->createUser();
+        $post = $this->createPost(['user_id' => $user->id]);
+
+        $this->assertInstanceOf(User::class, $post->user);
     }
 }

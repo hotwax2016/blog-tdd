@@ -8,6 +8,11 @@ use App\Post;
 
 class PostsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth')->except('index', 'show');
+    }
+
     public function index()
     {
         $posts = Post::published()->get();
@@ -25,16 +30,16 @@ class PostsController extends Controller
     {
         return view('post.create');
     }
-    
+
     public function store(Request $request)
     {
 
         $name = $request->image_url->name;
         $content = file_get_contents($request->image_url);
-        
+
         Storage::put($name, $content);
-        
-        Post::create($request->all());
+
+        auth()->user()->blogs()->create($request->all());
 
         return redirect('/posts');
     }
@@ -47,7 +52,7 @@ class PostsController extends Controller
     public function update(Post $post)
     {
         $post->update(request()->all());
-        
+
         return redirect('/posts');
     }
 

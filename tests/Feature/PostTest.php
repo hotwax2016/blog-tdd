@@ -3,13 +3,19 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Post;
+use App\User;
 
 class PostTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setup(): void
+    {
+        parent::setup();
+        $authUser = $this->createAuthUser();
+    }
 
     public function test_a_user_can_see_list_of_published_blog_posts()
     {
@@ -30,19 +36,21 @@ class PostTest extends TestCase
 
     public function test_a_user_can_view_a_published_blog_post()
     {
-        $post = $this->createPost(['published_at' => now()]);
+        $user = $this->createUser();
+        $post = $this->createPost(['published_at' => now(), 'user_id' => $user->id]);
 
         $response = $this->get('/posts/' . $post->id);
 
         $response->assertStatus(200);
         $response->assertSee($post->title);
         $response->assertSee($post->body);
+        $response->assertSee($post->user->name);
     }
 
     public function test_a_user_cannot_view_an_unpublished_blog_post()
     {
         $this->withExceptionHandling();
-        
+
         $post = $this->createPost(['published_at' => null]);
 
         $response = $this->get('/posts/' . $post->id);
@@ -50,17 +58,23 @@ class PostTest extends TestCase
         $response->assertStatus(404);
     }
 
-    public function test_a_user_can_store_a_blog_post()
+    public function test_only_an_authenticated_user_can_store_a_blog_post()
     {
+        $user = $this->createAuthUser();
+
         $data = factory(Post::class)->raw();
+        unset($data['user_id']);
 
         $response = $this->post('/posts', $data);
 
         $response->assertRedirect('/posts');
-        $this->assertDatabaseHas('posts', $data);
+        $this->assertDatabaseHas('posts', [
+            'image_url' => $data['image_url'],
+            'user_id' => auth()->id()
+        ]);
     }
 
-    public function test_a_user_can_delete_a_blog_page()
+    public function test_only_an_authenticated_user_can_delete_a_blog_page()
     {
         $post = $this->createPost();
 
@@ -105,5 +119,4 @@ class PostTest extends TestCase
         $response->assertSee($post->title);
         $response->assertSee($post->body);
     }
-
 }

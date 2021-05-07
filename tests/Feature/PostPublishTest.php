@@ -3,15 +3,19 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use App\Post;
 
 class PostPublishTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_a_user_can_publish_a_blog_post()
+    public function setup(): void
+    {
+        parent::setup();
+        $this->createAuthUser();
+    }
+
+    public function test_only_an_authenticated_user_can_publish_a_blog_post()
     {
         $post = $this->createPost();
 
@@ -23,7 +27,7 @@ class PostPublishTest extends TestCase
         $this->assertNotNull($post->fresh()->published_at);
     }
 
-    public function test_a_user_can_unpublish_a_blog_post()
+    public function test_only_an_authenticated_user_can_unpublish_a_blog_post()
     {
         $post = $this->createPost([
             'published_at' => now()

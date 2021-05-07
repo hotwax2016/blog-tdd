@@ -12,9 +12,11 @@ class PostImageUploadTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_user_can_upload_image_along_with_the_blog_post()
+    public function test_only_an_authenticated_user_can_upload_image_along_with_the_blog_post()
     {
         Storage::fake();
+
+        $this->createAuthUser();
 
         $data = factory(Post::class)->raw();
 
@@ -22,6 +24,5 @@ class PostImageUploadTest extends TestCase
 
         $this->assertDatabaseHas('posts', ['image_url' => $data['image_url']]);
         Storage::assertExists('photo1.jpg');
-
-    }    
+    }
 }
